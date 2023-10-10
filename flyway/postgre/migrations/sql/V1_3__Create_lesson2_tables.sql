@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TYPE organization_status_type AS ENUM ('active', 'suspend', 'deleted');
 CREATE TYPE user_status_type AS ENUM ('active', 'deactivated', 'deleted');
 CREATE TYPE gender_type AS ENUM ('male', 'female');
