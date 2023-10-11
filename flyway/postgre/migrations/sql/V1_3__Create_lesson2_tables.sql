@@ -7,7 +7,7 @@ CREATE TYPE gender_type AS ENUM ('male', 'female');
 CREATE TABLE IF NOT EXISTS sso_organization (
     organization_id SERIAL PRIMARY KEY NOT NULL,
     organization_name VARCHAR(255) NOT NULL,
-    status organization_status_type,
+    status organization_status_type DEFAULT 'active'::organization_status_type NOT NULL,
     address VARCHAR(255),
     contact_number VARCHAR(255),
     email VARCHAR(255),
