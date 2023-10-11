@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS sso_user (
     kvp JSONB,
     date_created TIMESTAMPTZ DEFAULT now(),
     date_modified TIMESTAMPTZ DEFAULT now(),
-    modified_by BIGINT,
+    modified_by UUID,
     last_logged_in TIMESTAMPTZ,
     user_settings JSONB DEFAULT '{}' :: JSONB,
     status user_status_type DEFAULT 'active' :: user_status_type
