@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS sso_role (
     role_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
     role_name VARCHAR(255) NOT NULL,
     role_description VARCHAR(255),
-    organization_id INT NOT NULL,
+    organization_id INT,
     FOREIGN KEY (organization_id) REFERENCES sso_organization(organization_id)
 );
 
