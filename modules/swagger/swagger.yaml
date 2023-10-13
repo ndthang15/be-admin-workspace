@@ -1,0 +1,198 @@
+openapi: 3.0.0
+info:
+  title: BE Admin Workspace
+  version: '1.0'
+servers:
+  - url: http://localhost:6303
+    description: Local Server
+paths:
+  /users:
+    get:
+      tags:
+        - User
+      summary: Get User Collections
+      operationId: GetListUsers
+      parameters:
+        - name: userId
+          in: query
+          description: Filter by user's id
+          required: false
+          schema:
+            type: string
+            example: 'uuid'
+        - name: organizationIds
+          in: query
+          description: List IDs of organizations
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+              example: 123
+        - name: name
+          in: query
+          description: Filter by user's name
+          required: false
+          schema:
+            type: string
+            example: 'foo'
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 30
+        - name: offset
+          in: query
+          description: The collection's offset
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 0
+        - name: orderBy
+          in: query
+          description: The Collection's order by
+          schema:
+            type: string
+            example: dateCreated ASC,firstName ASC,lastName ASC,phoneNumber ASC,status ASC,organizationName ASC
+      responses:
+        200:
+          description: 'Get User Collection successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - limit
+                  - offset
+                  - records
+                properties:
+                  count:
+                    type: integer
+                    format: int32
+                  limit:
+                    type: integer
+                    format: int32
+                  offset:
+                    type: integer
+                    format: int32
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserListItem'
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized error
+        500:
+          description: Internal Error
+    post:
+      tags:
+        - User
+      summary: API to create an User
+      operationId: CreateUser
+      parameters:
+        - name: userCreate
+          description: User Object to create
+          in: body
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserCreate'
+      responses:
+        200:
+          description: Create User successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized error
+        500:
+          description: Internal Error
+components:
+  schemas:
+    User:
+      description: Full Object of User Details
+      type: object
+      properties:
+        userId:
+          description: ID của User
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        status:
+          type: string
+        lastLoggedIn:
+          type: string
+          format: date-time
+        dateCreated:
+          type: string
+          format: date-time
+        # profile:
+        #   $ref: '#/components/schemas/UserProfile'
+        # organizations:
+        #   type: array
+        #   items:
+        #     $ref: '#/components/schemas/OrganizationListItem'
+        # roleIds:
+        #   type: array
+        #   items: 
+        #     $ref: '#/components/schemas/RoleListItem'
+      required:
+        - userId
+        - profile
+    UserListItem:
+      type: object
+      properties:
+        userId:
+          description: ID of User
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        status:
+          type: string
+        lastLoggedIn:
+          type: string
+          format: date-time
+        dateCreated:
+          type: string
+          format: date-time
+      required:
+        - userId
+    UserCreate:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phoneNumber:
+          type: string
+        roleIds:
+          type: array
+          items:
+            type: string
+        organizationId:
+          type: integer
+          format: int32
+      required:
+        - username
+        - organizationId
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+  - httpBearer: []

@@ -5,7 +5,7 @@ CREATE TYPE user_status_type AS ENUM ('active', 'deactivated', 'deleted');
 CREATE TYPE gender_type AS ENUM ('male', 'female');
 
 CREATE TABLE IF NOT EXISTS sso_organization (
-    organization_id SERIAL PRIMARY KEY NOT NULL GENERATED ALWAYS AS identity,
+    organization_id SERIAL PRIMARY KEY NOT NULL,
     organization_name VARCHAR(255) NOT NULL,
     status organization_status_type DEFAULT 'active'::organization_status_type NOT NULL,
     address VARCHAR(255),
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS sso_organization (
     website_url VARCHAR(255),
     kvp JSONB,
     date_created TIMESTAMPTZ DEFAULT now(),
-    date_modified TIMESTAMPTZ DEFAULT now(),
+    date_modified TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS sso_role (
