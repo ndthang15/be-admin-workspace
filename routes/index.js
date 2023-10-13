@@ -14,6 +14,7 @@ function initRouters(app) {
 
   require('./auth')(app);
   require('./organizations')(app, middelwares);
+  require('./users')(app, middelwares);
 }
 
 module.exports = initRouters;
