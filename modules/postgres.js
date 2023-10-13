@@ -14,7 +14,7 @@ module.exports = () => {
     const transClient = _.isObject(dbTrans) ? dbTrans : await pool.connect();
 
     try {
-      const dbResults = transClient.query(sql, params);
+      const dbResults = await transClient.query(sql, params);
 
       return _.isFunction(mapFunc) ? mapFunc(dbResults) : dbResults; 
     } catch (err) {
@@ -37,6 +37,10 @@ module.exports = () => {
       release: () => client.release()
     }
   }
+
+  pool.on('connect', (client) => {
+    console.log('A new transaction has been created.');
+  });
 
   return {query, createTrans};
 }
