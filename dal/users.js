@@ -30,7 +30,7 @@ module.exports = (app) => {
             u.modified_by,
             u.last_logged_in,
             u.user_settings,
-            u.status 
+            u.status
         FROM public.sso_user u
     `;
 
@@ -50,12 +50,13 @@ module.exports = (app) => {
 			sql += ` OFFSET ${options.offset || 0}`;
 		}
 
-    const resultQuery = await dbClient.query(sql, sqlParams);
-    const mappedRes = camelcaseKeys(resultQuery.rows, { deep: true });
+    const resultQuery = await dbClient.query(sql, sqlParams, (result) => {
+      return camelcaseKeys(result.rows, { deep: true });
+    });
 
     return {
-      count: mappedRes.length,
-      results: mappedRes,
+      count: resultQuery.length,
+      results: resultQuery,
       limit: options.limit || 30,
       offset: options.offset || 0
     }

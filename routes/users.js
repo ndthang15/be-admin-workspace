@@ -5,20 +5,20 @@ module.exports = function (app, middelwares) {
     throw new Error('missing app');
   }
 
-  const routerOrganizations = express.Router();
+  const routerUsers = express.Router();
 
   //TODO: Add Router-level middlewares
 
   //TODO: Add the Route-level middleware to response 401 if any falling through
-  app.use('/users', routerOrganizations);
+  app.use('/users', routerUsers);
 
   //TODO: Add the routes for organization model
-  routerOrganizations.get('/', getUsers);
+  routerUsers.get('/', getUsers);
 
   async function getUsers(req, res, next) {
     try {
       // validation params if needed
-      const options = req.body;
+      const options = req.query;
       const results = await app.bll.users.getUsers(options);
 
       return res.status(200).send(results);
