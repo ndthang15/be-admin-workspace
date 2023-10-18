@@ -144,7 +144,19 @@ module.exports = (app) => {
                 kvp = $12,
                 date_modified = NOW()
             WHERE organization_id = $1
-            RETURNING *;
+            RETURNING organization_id,
+            organization_name,
+            status,
+            address,
+            contact_number,
+            email,
+            country,
+            state,
+            city,
+            postal_code,
+            website_url,
+            date_created,
+            date_modified
         `;
 
         const sqlParams = [
