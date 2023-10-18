@@ -52,7 +52,7 @@ module.exports = function (app, middelwares) {
   }
 
   //Update user
-  routerUsers.patch("/:id", updateUser);
+  routerUsers.put("/:id", updateUser);
   async function updateUser(req, res, next) {
     try {
       const id = req.params.id;
