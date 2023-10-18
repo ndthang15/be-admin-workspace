@@ -105,24 +105,9 @@ module.exports = (app) => {
       user_settings,
       status,
     } = body;
-    if (!username) {
-      errorMessage += "username, ";
-      count += 1;
+    if (!username || !email || !password) {
+      throw new Error('username and email and password are required!');
     }
-    if (!email) {
-      errorMessage += "email, ";
-      count += 1;
-    }
-    if (!password) {
-      errorMessage += "password ";
-      count += 1;
-    }
-    error =
-      count === 0
-        ? ``
-        : count === 1
-        ? error + " is required."
-        : " are required.";
 
     sql += `
       INSERT INTO sso_user (
