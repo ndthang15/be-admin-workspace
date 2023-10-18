@@ -81,7 +81,19 @@ module.exports = (app) => {
             organization_name, status, address, contact_number, email,
             country, state, city, postal_code, website_url, kvp
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-          RETURNING *;
+          RETURNING organization_id,
+            organization_name,
+            status,
+            address,
+            contact_number,
+            email,
+            country,
+            state,
+            city,
+            postal_code,
+            website_url,
+            date_created,
+            date_modified
         `;
 
         const sqlParams = [
