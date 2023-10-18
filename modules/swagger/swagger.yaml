@@ -115,6 +115,120 @@ paths:
           description: Unauthorized error
         500:
           description: Internal Error
+
+  /organizations:
+    get:
+      summary: Get organizations
+      description: Retrieve a list of organizations
+      parameters:
+        - name: limit
+          in: query
+          description: Number of organizations to retrieve (default is 30)
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: Number of organizations to skip (default is 0)
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              count:
+                type: integer
+              results:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create organization
+      description: Create a new organization
+      parameters:
+        - name: organizationData
+          in: body
+          description: Organization data
+          required: true
+          schema:
+            $ref: '#/components/schemas/OrganizationCreate'
+      responses:
+        '201':
+          description: Organization created successfully
+          schema:
+            $ref: '#/components/schemas/Organization'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /users/{organizationId}:
+    get:
+      summary: Get organization by ID
+      description: Retrieve organization details by its ID
+      parameters:
+        - name: organizationId
+          in: path
+          description: ID of the organization to retrieve
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/components/schemas/Organization'
+        '404':
+          description: Organization not found
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update organization
+      description: Update an existing organization by ID
+      parameters:
+        - name: organizationId
+          in: path
+          description: ID of the organization to update
+          required: true
+          type: integer
+        - name: organizationData
+          in: body
+          description: Updated organization data
+          required: true
+          schema:
+            $ref: '#/components/schemas/OrganizationUpdate'
+      responses:
+        '200':
+          description: Organization updated successfully
+          schema:
+            $ref: '#/components/schemas/Organization'
+        '404':
+          description: Organization not found
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete organization
+      description: Delete an organization by ID
+      parameters:
+        - name: organizationId
+          in: path
+          description: ID of the organization to delete
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: Organization deleted successfully
+        '404':
+          description: Organization not found
+        '500':
+          description: Internal server error
 components:
   schemas:
     User:
@@ -144,7 +258,7 @@ components:
         #     $ref: '#/components/schemas/OrganizationListItem'
         # roleIds:
         #   type: array
-        #   items: 
+        #   items:
         #     $ref: '#/components/schemas/RoleListItem'
       required:
         - userId
@@ -190,6 +304,175 @@ components:
       required:
         - username
         - organizationId
+
+    Organization:
+      type: object
+      properties:
+        organization_id:
+          type: integer
+          format: int64
+          example: 1
+        organization_name:
+          type: string
+          maxLength: 255
+          example: Example Organization
+        status:
+          type: string
+          enum: ['active', 'inactive'] # Assuming organization_status_type has these values
+          example: active
+        address:
+          type: string
+          maxLength: 255
+          example: 123 Main St
+        contact_number:
+          type: string
+          maxLength: 255
+          example: '+1234567890'
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: info@example.com
+        country:
+          type: string
+          maxLength: 255
+          example: United States
+        state:
+          type: string
+          maxLength: 255
+          example: California
+        city:
+          type: string
+          maxLength: 255
+          example: San Francisco
+        postal_code:
+          type: string
+          maxLength: 255
+          example: '12345'
+        website_url:
+          type: string
+          format: uri
+          maxLength: 255
+          example: https://www.example.com
+        kvp:
+          type: object
+          example: { 'key': 'value' } # Example JSONB structure
+        date_created:
+          type: string
+          format: date-time
+          example: '2023-10-17T12:00:00Z'
+        date_modified:
+          type: string
+          format: date-time
+          example: '2023-10-17T12:30:00Z'
+      required:
+        - organization_name
+        - status
+
+    OrganizationCreate:
+      type: object
+      properties:
+        organization_name:
+          type: string
+          maxLength: 255
+          example: Example Organization
+        status:
+          type: string
+          enum: ['active', 'inactive']
+          example: active
+        address:
+          type: string
+          maxLength: 255
+          example: 123 Main St
+        contact_number:
+          type: string
+          maxLength: 255
+          example: '+1234567890'
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: info@example.com
+        country:
+          type: string
+          maxLength: 255
+          example: United States
+        state:
+          type: string
+          maxLength: 255
+          example: California
+        city:
+          type: string
+          maxLength: 255
+          example: San Francisco
+        postal_code:
+          type: string
+          maxLength: 255
+          example: '12345'
+        website_url:
+          type: string
+          format: uri
+          maxLength: 255
+          example: https://www.example.com
+        kvp:
+          type: object
+          example: { 'key': 'value' } # Example JSONB structure
+      required:
+        - organization_name
+        - status
+
+    OrganizationUpdate:
+      type: object
+      properties:
+        organization_name:
+          type: string
+          maxLength: 255
+          example: Updated Organization Name
+        status:
+          type: string
+          enum: ['active', 'inactive']
+          example: inactive
+        address:
+          type: string
+          maxLength: 255
+          example: 456 Elm St
+        contact_number:
+          type: string
+          maxLength: 255
+          example: '+9876543210'
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: updated@example.com
+        country:
+          type: string
+          maxLength: 255
+          example: Canada
+        state:
+          type: string
+          maxLength: 255
+          example: Ontario
+        city:
+          type: string
+          maxLength: 255
+          example: Toronto
+        postal_code:
+          type: string
+          maxLength: 255
+          example: '54321'
+        website_url:
+          type: string
+          format: uri
+          maxLength: 255
+          example: https://updated.example.com
+        kvp:
+          type: object
+          example: { 'new_key': 'new_value' } # Example JSONB structure
+      anyOf:
+        - required: ['organization_name']
+        - required: ['status']
+
   securitySchemes:
     httpBearer:
       type: http

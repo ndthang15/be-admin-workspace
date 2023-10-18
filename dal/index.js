@@ -1,5 +1,6 @@
 module.exports = (app) => {
   return {
-    users: require('./users')(app)
+    users: require('./users')(app),
+    organizations: require('./organizations')(app)
   }
 };
