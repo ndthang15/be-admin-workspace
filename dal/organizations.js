@@ -107,7 +107,7 @@ module.exports = (app) => {
             city,
             postal_code,
             website_url,
-            JSON.stringify(kvp),
+            kvp,
         ];
 
         const result = await dbClient.query(sql, sqlParams);
