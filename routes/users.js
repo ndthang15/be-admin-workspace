@@ -5,12 +5,13 @@ module.exports = function (app, middelwares) {
     throw new Error("missing app");
   }
 
+  const permissions = require('../permissions');
   const routerUsers = express.Router();
 
   //TODO: Add Router-level middlewares
 
   //TODO: Add the Route-level middleware to response 401 if any falling through
-  app.use("/users", routerUsers);
+  app.use("/users", middelwares.requireAuthen, routerUsers);
 
   //Get all users
   routerUsers.get("/", getUsers);
@@ -74,5 +75,10 @@ module.exports = function (app, middelwares) {
     } catch (err) {
       return next(err);
     }
+  }
+
+  routerUsers.get('/:id/profiles', middelwares.requirePermissions([permissions.user.profile.read]), getUserProfiles)
+  async function getUserProfiles(req, res, next) {
+    return res.status(200).send({ userId: 1 });
   }
 };

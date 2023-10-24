@@ -1,5 +1,4 @@
 const cookieParser = require("cookie-parser");
-const { middlewareCorsHeader } = require("./middlewares")();
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -19,15 +18,17 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.use(middlewareCorsHeader);
-
 app.get("/", (req, res) => {
   return res.status(200).send({ message: "You are welcome!" });
 });
 
 app.pg = require("./modules/postgres")();
+app.redis = require('./modules/redis')(app);
+app.middlewares = require("./middlewares")(app);
 app.dal = require("./dal")(app);
 app.bll = require("./bll")(app);
+
+app.use(app.middlewares.middlewareCorsHeader);
 
 app.listen(PORT, function onListening() {
   console.log("Listening to port " + PORT);

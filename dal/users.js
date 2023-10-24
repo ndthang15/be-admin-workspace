@@ -17,6 +17,16 @@ module.exports = (app) => {
     return camelcaseKeys(resultQuery.rows[0], { deep: true }); // { userId: 1, ... }
   }
 
+  async function getUserByUserName(username, dbClient = db) {
+    if (!username) {
+      throw new Error("username is required.");
+    }
+
+    const resultQuery = await getUsers({ username }, dbClient);
+
+    return camelcaseKeys(resultQuery.results[0], { deep: true }); // { userId: 1, ... }
+  }
+
   async function getUsers(options, dbClient = db) {
     const sqlWhere = [];
     const sqlParams = [];
@@ -30,13 +40,19 @@ module.exports = (app) => {
             u.modified_by,
             u.last_logged_in,
             u.user_settings,
-            u.status
+            u.status,
+            u.password
         FROM public.sso_user u
     `;
 
     if (options.id) {
       sqlParams.push(options.id);
       sqlWhere.push(`u.user_id = $${sqlParams.length}`);
+    }
+
+    if (options.username) {
+      sqlParams.push(options.username);
+      sqlWhere.push(`u.username = $${sqlParams.length}`);
     }
 
     if (sqlWhere.length) {
@@ -223,5 +239,6 @@ module.exports = (app) => {
     getUserById,
     deleteUser,
     updateUser,
+    getUserByUserName
   };
 };
