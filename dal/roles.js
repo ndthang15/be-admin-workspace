@@ -83,7 +83,7 @@ module.exports = (app) => {
   }
 
   async function updateRole(params, dbClient = db) {
-    if (!roleId) {
+    if (!params && !params.roleId) {
       throw new Error('roleId is required.');
     }
     const sql = `
