@@ -105,7 +105,7 @@ module.exports = (app) => {
       throw new Error('roleId is required.');
     }
     const sql = `
-      DELETE FROM sso_role WHERE role_id = ${roleId}
+      DELETE FROM sso_role WHERE role_id = $1
     `;
     const deletedRole = await dbClient.query(sql, (result) => {
       return camelcaseKeys(result, { deep: true });
