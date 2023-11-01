@@ -47,7 +47,7 @@ module.exports = function (app, middlewares) {
     try {
       // validation params if needed
       const params = req.body;
-      console.log('-----', req);
+      console.log('-----', params);
       const result = await app.bll.roles.createRole(params);
 
       return res.status(201).send(result);
