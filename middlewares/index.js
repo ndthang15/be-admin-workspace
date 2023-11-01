@@ -1,17 +1,20 @@
-const _ = require("lodash");
+const _ = require('lodash');
 
-module.exports = function middlewares(app) {
+module.exports = function middlewares() {
   function middlewareCorsHeader(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Methods",
-      "GET, POST, DELETE, PATCH, OPTIONS"
+    // Add response header to res.setHeader() for CORS requests here.
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, PATCH, DELETE'
     );
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Content-Type', 'application/json');
 
-    if (req.method === "OPTIONS") {
+    if (req.method === 'OPTIONS') {
       res.status(200).end();
-      next();
+      return;
     }
 
     next();
