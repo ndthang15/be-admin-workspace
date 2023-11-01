@@ -9,7 +9,7 @@ require("dotenv").config({
   path: path.join(__dirname, "development.env"),
 });
 
-const initSwagger = require("./modules/swagger/swagger");
+const initSwagger = require('./modules/swagger/swaggerInit');
 const initRouters = require("./routes");
 
 app.use(express.json());
@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
   return res.status(200).send({ message: "You are welcome!" });
 });
 
-app.pg = require("./modules/postgres")();
+app.pg = require('./modules/postgres/postgresConfig')();
 app.redis = require('./modules/redis')(app);
 app.middlewares = require("./middlewares")(app);
 app.dal = require("./dal")(app);
@@ -33,6 +33,7 @@ app.use(app.middlewares.middlewareCorsHeader);
 app.listen(PORT, function onListening() {
   console.log("Listening to port " + PORT);
 });
+
 initSwagger(app, express);
 initRouters(app);
 

@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  title: BE Admin Workspace
+  version: '1.0'
+servers:
+  - url: http://localhost:6065
+    description: Local Server
+paths:
+  /roles:
+    get:
+      tags:
+        - Roles
+      summary: Get Role Collections
+      operationId: GetListRoles
+      parameters:
+        - name: roleId
+          in: query
+          description: Filter by role's id
+          required: false
+          schema:
+            type: string
+            example: 'uuid'
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 30
+        - name: offset
+          in: query
+          description: The collection's offset
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 0
+        - name: orderBy
+          in: query
+          description: The Collection's order by
+          schema:
+            type: string
+            example: dateCreated ASC,firstName ASC,lastName ASC,phoneNumber ASC,status ASC,organizationName ASC
+      responses:
+        200:
+          description: 'Get Role Collection successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - count
+                  - limit
+                  - offset
+                  - records
+                properties:
+                  count:
+                    type: integer
+                    format: int32
+                  limit:
+                    type: integer
+                    format: int32
+                  offset:
+                    type: integer
+                    format: int32
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized error
+        500:
+          description: Internal Error
+  /roles/{roleId}:
+    get:
+      tags:
+        - Role detail
+      summary: Get Role Detail
+      operationId: GetRoleDetail
+      parameters:
+        - name: roleId
+          in: path
+          description: Parameter description in CommonMark or HTML
+          required: true
+          schema:
+            type: string
+            example: 'uuid'
+      responses:
+        200:
+          description: 'Get Role Detail successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized error
+        500:
+          description: Internal Error
+  /roles/create:
+    post:
+      tags:
+        - Role create
+      summary: API to create a Role
+      operationId: CreateRole
+      parameters:
+        - name: roleCreate
+          description: Role Object to create
+          in: body
+          required: true
+          schema:
+            $ref: '#/components/schemas/RoleCreate'
+      responses:
+        201:
+          description: Create Role successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized error
+        500:
+          description: Internal Error
+  /roles/update:
+    put:
+      tags:
+        - Role update
+      summary: API to update a Role
+      operationId: UpdateRole
+      parameters:
+        - name: roleCreate
+          description: Role Object to create
+          in: body
+          required: true
+          schema:
+            $ref: '#/components/schemas/RoleCreate'
+      responses:
+        201:
+          description: Create Role successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized error
+        500:
+          description: Internal Error
+  /roles/delete/{roleId}:
+    delete:
+      tags:
+        - Role delete
+      summary: API to update a Role
+      operationId: UpdateRole
+       parameters:
+        - name: roleId
+          in: path
+          description: Parameter description in CommonMark or HTML
+          required: true
+          schema:
+            type: string
+            example: 'uuid'
+      responses:
+        201:
+          description: Create Role successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+        401:
+          description: Unauthorized error
+        500:
+          description: Internal Error
+components:
+  schemas:
+    Role:
+      description: Full Object of Role Details
+      type: object
+      properties:
+        roleId:
+          description: ID of Role
+          type: string
+        roleName:
+          type: string
+        roleDescription:
+          type: string
+        orgId:
+          type: integer
+          format: int32
+      required:
+        - roleId
+        - roleName
+    RoleCreate:
+      description: Params can be updated
+      type: object
+      properties:
+        roleName:
+          type: string
+        roleDescription:
+          type: string
+        orgId:
+          type: integer
+          format: int32
+      required:
+        - roleName
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+  - httpBearer: []
