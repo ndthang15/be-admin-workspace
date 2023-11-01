@@ -6,10 +6,10 @@ function initRouters(app) {
   const middlewares = require('../middlewares')();
 
   // add the Application-level middlewares here
+app.use(middlewares.middlewareCorsHeader);
 
   // API for the root path
   app.get('/', function (req, res) {
-    app.use(middlewares.middlewareCorsHeader(req, res));
     return res.status(200).json({ message: 'Welcome' });
   });
 
