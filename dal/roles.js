@@ -89,10 +89,10 @@ module.exports = (app) => {
     const sql = `
       UPDATE sso_role
       SET
-        role_name = ${params.roleName},
-        role_description =  ${params.roleDescription},
-        org_id = ${params.orgId}
-      WHERE role_id = ${params.roleId}
+        role_name = $2,
+        role_description =  $3,
+        org_id = $4
+      WHERE role_id = $1
     `;
     const updatedRole = await dbClient.query(sql, (result) => {
       return camelcaseKeys(result, { deep: true });
