@@ -1,61 +1,41 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
+const express = require('express');
+const bcrypt = require('bcrypt');
+const uuid = require('uuid');
 
 module.exports = function (app) {
   if (!app) {
-    throw new Error("missing app");
+    throw new Error('missing app');
   }
 
   const routerAuth = express.Router();
 
-  app.use("/auth", routerAuth);
+  app.use('/auth', routerAuth);
 
-  routerAuth.post("/login", login);
+  routerAuth.post('/login', login);
 
-  function login(req, res, next) {
-    const hardCodeUserName = "mock-user";
-    const hardCodePassword = "mock123";
-    // Hash the mock password with saltRounds = 12 and fill to hashPassword
-    let hashPassword =
-      "$2a$12$TNhphTbTg6Yr3r6YHxCituvo8pKP9cbuFuat7.tcmXKdM7F2EIVPC";
-
-    // Use the bcrypt to verify the req.body.username and req.body.password which should match the hashPassword above
-    if (req.body.username === hardCodeUserName) {
-      validatePassword(hardCodePassword, hashPassword)
-        .then((isValidPassword) => {
-          if (isValidPassword) {
-            return res.status(200).send("OK");
-          }
-        })
-        .catch((err) => {
-          console.error(err.message);
-          return res.status(400).send("Invalid Username or Password");
-        });
+  async function login(req, res, next) {
+    const username = req.body.username;
+    const password = req.body.password;
+    
+    const userLogin = await app.dal.users.getUserByUserName(username);
+    if (!userLogin) {
+      return res.status(400).send({ message: 'Inavlid username' });
     }
 
-    return res.status(400).send("Invalid Username or Password");
-  }
+    const validate = bcrypt.compareSync(password, userLogin.password);
+    if (validate) {
+      const userToken = uuid.v4();
+      const sessionKey = 'SESSION:' + userToken;
 
-  function genHashWithSalt(password, saltRounds) {
-    bcrypt
-      .genSalt(saltRounds)
-      .then((salt) => {
-        return bcrypt.hash(password, salt);
-      })
-      .then((hash) => {
-        return hash;
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
-  }
+      // TODO: Get Roles for User
+      // TODO: Assign all permissions of User to userLogin object
+      // Ex: userLogin.permissions = [1,2,3,...];
 
-  function validatePassword(password, hash) {
-    bcrypt
-      .compare(password, hash)
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => console.error(err.message));
+      await app.redis.set(sessionKey, userLogin);
+
+      return res.status(200).send({ message: "Login successful", token: userToken });
+    }
+
+    return res.status(400).send({ message: "Invalid password" });
   }
 };
