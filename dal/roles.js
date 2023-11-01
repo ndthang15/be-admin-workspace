@@ -94,7 +94,7 @@ module.exports = (app) => {
         org_id = $4
       WHERE role_id = $1
     `;
-    const updatedRole = await dbClient.query(sql, (result) => {
+    const updatedRole = await dbClient.query(sql, [params.roleId, params.roleName, params.roleDescription, params.orgId], (result) => {
       return camelcaseKeys(result, { deep: true });
     });
     return updatedRole;
