@@ -107,7 +107,7 @@ module.exports = (app) => {
     const sql = `
       DELETE FROM sso_role WHERE role_id = $1
     `;
-    const deletedRole = await dbClient.query(sql, (result) => {
+    const deletedRole = await dbClient.query(sql, [roleId], (result) => {
       return camelcaseKeys(result, { deep: true });
     });
     return deletedRole;
