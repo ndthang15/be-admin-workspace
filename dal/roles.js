@@ -71,9 +71,9 @@ module.exports = (app) => {
           org_id
         )
       VALUES (
-        ${params.roleName},
-        ${params.roleDescription},
-        ${params.orgId}
+        $1,
+        $2,
+        $3
       )
     `;
     const newRole = await dbClient.query(sql, (result) => {
